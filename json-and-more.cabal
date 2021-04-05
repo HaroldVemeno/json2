@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 99370b362fa9303beaf9c0ed255c60aba612ae099b3807d24db99735c4136b73
+-- hash: 2a1191730e7399df353639df81d4bb58f41529ea74a84145a2c6e230d7ae847a
 
 name:           json-and-more
 version:        0.1.0.0
@@ -14,7 +14,8 @@ bug-reports:    https://github.com/DJMiky007/json-and-more/issues
 author:         já
 maintainer:     já
 copyright:      2021 já
-license:        none
+license:        GPL-3
+license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
