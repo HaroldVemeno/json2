@@ -1,0 +1,13 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "json-and-more:lib"
+
+    - path: "./app/Main.hs"
+      component: "json-and-more:exe:json-and-more-exe"
+
+    - path: "./app/Paths_json_and_more.hs"
+      component: "json-and-more:exe:json-and-more-exe"
+
+    - path: "./test"
+      component: "json-and-more:test:json-and-more-test"

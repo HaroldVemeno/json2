@@ -1,0 +1,90 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 99370b362fa9303beaf9c0ed255c60aba612ae099b3807d24db99735c4136b73
+
+name:           json-and-more
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/json-and-more#readme>
+homepage:       https://github.com/DJMiky007/json-and-more#readme
+bug-reports:    https://github.com/DJMiky007/json-and-more/issues
+author:         já
+maintainer:     já
+copyright:      2021 já
+license:        none
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/DJMiky007/json-and-more
+
+library
+  exposed-modules:
+      CLI
+      MParse
+      MParseText
+      Parse
+      Show
+      Types
+  other-modules:
+      Paths_json_and_more
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , megaparsec
+    , parsec
+    , scientific
+    , text
+    , unordered-containers
+  default-language: Haskell2010
+
+executable json-and-more-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_json_and_more
+  hs-source-dirs:
+      app
+  ghc-options: -O -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , json-and-more
+    , megaparsec
+    , parsec
+    , scientific
+    , text
+    , unordered-containers
+  default-language: Haskell2010
+
+test-suite json-and-more-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_json_and_more
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , json-and-more
+    , megaparsec
+    , parsec
+    , scientific
+    , text
+    , unordered-containers
+  default-language: Haskell2010
