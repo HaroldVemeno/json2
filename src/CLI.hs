@@ -28,6 +28,7 @@ parseDefault = parseWith ["mparset"]
 
 defMain :: IO ()
 defMain = do
+    putStrLn ""
     args <- getArgs
     if null args then 
         error "No action"
