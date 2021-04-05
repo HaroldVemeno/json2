@@ -2,7 +2,6 @@
 module CLI where
 
 import System.Environment ( getArgs )
-import System.IO ()
 import System.CPUTime ( getCPUTime )
 import Data.Char ( toLower )
 import Data.Foldable ( Foldable(toList) )
