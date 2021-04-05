@@ -6,6 +6,7 @@ import System.CPUTime ( getCPUTime )
 import Data.Char ( toLower )
 import Data.Foldable ( Foldable(toList) )
 import Data.Bifunctor ( Bifunctor(bimap) )
+import Control.Monad ( void )
 
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -18,6 +19,7 @@ import qualified Types as Json
 import qualified Parse as P
 import qualified MParse as MP
 import qualified MParseText as MPT
+import qualified MParseBS as MPBS
 import qualified Data.Aeson as Aeson
 import Show
 
@@ -34,7 +36,7 @@ defMain = do
     else let (action:rest) = args in case map toLower action of 
         "parsewith" -> parseWith rest
         "parse" -> parseDefault rest
-        "time" -> time rest
+        "time" -> void $ time rest
         "timeall" -> timeAll rest
         _ -> error (action ++ " is not an action")
     
@@ -46,6 +48,7 @@ parseWith args = if null args then error "Missing parser name" else
         "mparse" -> undefined
         "mparsetext" -> undefined
         "mparset"    -> undefined
+        "mparsebs"    -> undefined
         "aeson" -> undefined
         _ -> error (parser ++ " is not a parser name")
 
@@ -56,13 +59,14 @@ time args = if null args then error "Missing parser name" else
         "mparse" -> timeMParse rest
         "mparsetext" -> timeMParseT rest
         "mparset"    -> timeMParseT rest
+        "mparsebs"    -> timeMParseBS rest
         "aeson" -> timeAeson rest
         _ -> error (parser ++ " is not a parser name")
 
 timeParser :: String  -> -- Name
              (a -> b) -> -- The parser
               a       -> -- The data
-              IO ()
+              IO b
 
 aesonParse :: BS.ByteString -> Either String Json.Json
 aesonParse bs = toJson <$> Aeson.eitherDecodeStrict bs
@@ -83,6 +87,7 @@ timeAll args = do
     timeParser "Parse" P.parseJson files
     timeParser "MParse"  MP.parseJson files
     timeParser "MParseText" MPT.parseJson filet
+    timeParser "MParseBS" MPBS.parseJson filebs
     timeParser "Aeson" aesonParse filebs 
     putStrLn "That's all"
 
@@ -117,17 +122,20 @@ timeParser name parse file = do
     putStrLn $ name ++ " End!"
     let t = (/(10^12)) . fromIntegral $ end - start 
     putStrLn $ "Took " ++ show t ++ "s of cpu time"
+    return json
 
 timeParse args = do 
     file <- if null args then getContents else readFile (head args)
     timeParser "Parse" P.parseJson file
-    
 timeMParse args = do 
     file <- if null args then getContents else readFile (head args)
     timeParser "MParse" MP.parseJson file
 timeMParseT args = do 
     file <- if null args then T.getContents else T.readFile (head args)
     timeParser "MParseText" MPT.parseJson file
+timeMParseBS args = do 
+    file <- if null args then BS.getContents else BS.readFile (head args)
+    timeParser "MParseBS" MPBS.parseJson file
 timeAeson args = do
     file <- if null args then BS.getContents else BS.readFile (head args)
     timeParser "Aeson" aesonParse file
