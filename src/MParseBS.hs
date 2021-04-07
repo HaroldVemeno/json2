@@ -28,7 +28,7 @@ type Parser = Parsec Void B.ByteString
 #define CBKw8 93
 
 ws :: Parser ()
-ws = void . many $ oneOf ([9,10,11,13] :: [Word8]) -- " \n\t\v"
+ws = void . many . satisfy $ \ x -> 9 <= x && x <= 11 || x == 13  -- " \n\t\v"
 
 parseJson :: B.ByteString  -> Either String Json
 parseJson str = case parse start "" str of 
@@ -60,12 +60,12 @@ codepoint = char BSw8 *> (
     <|> '\r' <$ char 114 --'r'
     <|> '\t' <$ char 116 --'t'
     <|> toul <$ char 117 {-'u'-} <*> count 4 hexd
-    ) <|> B.w2c <$> noneOf [DQw8]
+    ) <|> B.w2c <$> satisfy (/= DQw8)
     where toul = chr . foldl1 (\a b -> 16 * a + b)
           hexd :: Parser Int
           hexd = (\x -> fromEnum x - 48 {-0-}) <$> digitChar 
-             <|> (\x -> fromEnum x - 87 {- (- 'a' + 10) -}) <$> oneOf [97..102] -- ['a'..'f']
-             <|> (\x -> fromEnum x - 55 {- (- 'A' + 10) -}) <$> oneOf [65..70]  -- ['A'..'F']
+             <|> (\x -> fromEnum x - 87 {- (- 'a' + 10) -}) <$> satisfy (\x -> 97 <= x && x <= 102)   --oneOf [97..102] -- ['a'..'f']
+             <|> (\x -> fromEnum x - 55 {- (- 'A' + 10) -}) <$> satisfy (\x -> 65 <= x && x <= 70) --oneOf [65..70]  -- ['A'..'F']
 
 object :: Parser Json
 object = J.Object . M.fromList <$ char OBCw8 <* ws <*> sepEndBy (kvp <* ws) (char CMAw8 *> ws) <* char CBCw8
@@ -78,7 +78,7 @@ jnum :: Parser Json
 jnum = J.Number <$> (makedbl
    <$> ( True <$ char DSHw8 <|> pure False) 
    <*> (    [0] <$  char 48 --'0' 
-        <|> (:) <$> (dtoint <$> oneOf [49..57] {-'1'..'9'-}) <*> many digit)
+        <|> (:) <$> (dtoint <$> satisfy (\x -> 49 <= x && x <= 57) {-'1'..'9'-}) <*> many digit)
    <*> ( char DOTw8 *> many digit 
         <|> pure [] )
    <*> ( (,) <$ oneOf [69, 101] {- "eE" -} <*> (True <$ char DSHw8 <|> False <$ optional (char 43 {-'+'-})) <*> many digit
