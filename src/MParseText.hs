@@ -20,7 +20,7 @@ ws = void . many $ oneOf (" \n\t\r" :: String)
 parseJson :: T.Text -> Either String Json
 parseJson str = case parse start "" str of 
      Right a -> Right a
-     Left e -> Left $ show e
+     Left e -> Left $ errorBundlePretty e
 
 start :: Parser Json
 start = ws *> json <* ws <* eof
