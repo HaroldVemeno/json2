@@ -16,7 +16,6 @@ import Types (Json)
 import qualified Types as J
 
 type Parser = Parsec Void B.ByteString
-
 #define DQw8 34
 #define BSw8 92
 #define CMAw8 44
@@ -29,12 +28,12 @@ type Parser = Parsec Void B.ByteString
 #define CBKw8 93
 
 ws :: Parser ()
-ws = void . many . satisfy $ \x -> 9 <= x && x <= 11 || x == 13 -- " \n\t\v"
+ws = void . takeWhileP Nothing $ (`elem` [9,10,13,32]) -- many . anyOf " \n\t\r"
 
 parseJson :: B.ByteString -> Either String Json
 parseJson str = case parse start "" str of
   Right a -> Right a
-  Left e -> Left $ show e
+  Left e -> Left $ errorBundlePretty e
 
 start :: Parser Json
 start = ws *> json <* ws <* eof
@@ -57,9 +56,9 @@ str = char DQw8 *> rest
          <|> ((\x y -> cps++[x]++y) <$ char BSw8 <*> escaped <*> rest)
 
       escaped = '\\' <$ char BSw8
-            <|> '"' <$ char DQw8
-            <|> '\b' <$ char 98 --'b'
-            <|> '/' <$ char 47 --'\'
+            <|> '"'  <$ char DQw8
+            <|> '\b' <$ char 98  --'b'
+            <|> '/'  <$ char 47  --'\'
             <|> '\f' <$ char 102 --'f'
             <|> '\n' <$ char 110 --'n'
             <|> '\r' <$ char 114 --'r'
