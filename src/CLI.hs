@@ -25,7 +25,7 @@ import Show
 
 
 
-parseDefault = parseWith ["mparset"] 
+parseDefault = parseWith ["mparsebs"] 
 
 defMain :: IO ()
 defMain = do
@@ -77,8 +77,11 @@ aesonParse bs = toJson <$> Aeson.eitherDecodeStrict bs
         toJson (Aeson.Number n) = Json.Number . SC.toRealFloat $ n
         toJson (Aeson.String t) = Json.String . T.unpack $ t
         toJson (Aeson.Array a) = Json.Array . toList $ toJson <$> a
-        toJson (Aeson.Object o) = 
-                Json.Object . M.fromList . fmap (bimap T.unpack toJson) . M.toList $ o
+        toJson (Aeson.Object o) = Json.Object 
+                                  . M.fromList
+                                  . fmap (bimap T.unpack toJson)
+                                  . M.toList 
+                                  $ o
 
 timeAll args = do
     filebs <- if null args then BS.getContents else BS.readFile (head args)
