@@ -1,10 +1,10 @@
 name:                json-and-more
 version:             0.1.0.0
-github:              "DJMiky007/json-and-more"
+github:              "HaroldVemeno/json-and-more"
 license:             GPL-3
-author:              "já"
-maintainer:          "já"
-copyright:           "2021 já"
+author:              "HaroldVemeno"
+maintainer:          "HaroldVemeno"
+copyright:           "2021 HaroldVemeno"
 
 extra-source-files:
 - README.md
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/json-and-more#readme>
+description:         Please see the README on GitHub at <https://github.com/HaroldVemeno/json-and-more#readme>
 
 dependencies:
 - base >= 4.7 && < 5
