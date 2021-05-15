@@ -50,9 +50,9 @@ json = array <|> object <|> jstr <|> jnum <|> bool <|> null
 str :: Parser String
 str = char DQw8 *> rest
     where
-      rest = do 
-        cps <- B.unpack <$> takeWhileP Nothing (\x -> x /= BSw8 && x /= DQw8) 
-        (cps <$ char DQw8) 
+      rest = do
+        cps <- B.unpack <$> takeWhileP Nothing (\x -> x /= BSw8 && x /= DQw8)
+        (cps <$ char DQw8)
          <|> ((\x y -> cps++[x]++y) <$ char BSw8 <*> escaped <*> rest)
 
       escaped = '\\' <$ char BSw8
@@ -102,7 +102,13 @@ jnum =
     digit = dtoint <$> digitChar
     dtoint a = fromEnum a - 48 -- '0'
 
-makedbl :: Bool -> [Int] -> [Int] -> (Bool, [Int]) -> Double
+makedbl ::
+     Bool    -- is negative
+  -> [Int]   -- the digits before the dot
+  -> [Int]   -- the digits after the dot
+  -> (Bool,  -- is the exponent negative
+      [Int]) -- the exponent digits
+  -> Double  -- the result
 makedbl neg darr fracarr (nege, exparr) =
   let neg' = (if neg then -1 else 1)
       mant =
